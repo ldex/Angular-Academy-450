@@ -1,6 +1,6 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, Input, numberAttribute, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { ProductDetailsComponent } from '../../components/product-details/product-details.component';
 import { ProductService } from '../../../../services/product.service';
@@ -20,22 +20,20 @@ import { Product } from '../../../../models/product.model';
     </app-product-details>
   `
 })
-export class ProductDetailsContainerComponent implements OnInit {
-  private route = inject(ActivatedRoute);
+export class ProductDetailsContainerComponent {
   private router = inject(Router);
   private productService = inject(ProductService);
   private cartService = inject(CartService);
   private authService = inject(AuthService);
 
-  product$: Observable<Product>;
+  product$!: Observable<Product>;
   authState$ = this.authService.getAuthState();
 
-  constructor() {
-    const productId = Number(this.route.snapshot.params['id']);
-    this.product$ = this.productService.getProduct(productId);
+  @Input({ transform: numberAttribute })
+  set id(productId: number)
+  {
+    this.product$ = this.productService.getProduct(productId)
   }
-
-  ngOnInit(): void {}
 
   onAddToCart(productId: number): void {
     this.cartService.addToCart(productId);
