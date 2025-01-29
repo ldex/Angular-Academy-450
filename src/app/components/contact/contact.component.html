@@ -1,0 +1,48 @@
+<div class="container mx-auto p-6">
+  <div class="max-w-3xl mx-auto">
+    <h1 class="text-3xl font-bold mb-8 text-center">Contact Us</h1>
+    
+    <div class="bg-white rounded-lg shadow-lg p-8 mb-8">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+        <div>
+          <h2 class="text-xl font-semibold mb-4">Get in Touch</h2>
+          <div class="space-y-4">
+            <div class="flex items-center space-x-3">
+              <span class="text-blue-600">📍</span>
+              <p>123 Business Street, Suite 100<br>New York, NY 10001</p>
+            </div>
+            <div class="flex items-center space-x-3">
+              <span class="text-blue-600">📞</span>
+              <p>(555) 123-4567</p>
+            </div>
+            <div class="flex items-center space-x-3">
+              <span class="text-blue-600">✉️</span>
+              <p>support&#64;productstore.com</p>
+            </div>
+          </div>
+        </div>
+        
+        <div>
+          <h2 class="text-xl font-semibold mb-4">Business Hours</h2>
+          <div class="space-y-2">
+            <p><span class="font-medium">Monday - Friday:</span> 9:00 AM - 6:00 PM</p>
+            <p><span class="font-medium">Saturday:</span> 10:00 AM - 4:00 PM</p>
+            <p><span class="font-medium">Sunday:</span> Closed</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="border-t pt-8">
+        <h2 class="text-xl font-semibold mb-4">Frequently Asked Questions</h2>
+        <div class="space-y-4">
+          @for (faq of faqs; track faq.question) {
+            <div class="faq">
+              <h3 class="font-medium text-lg mb-2">{{faq.question}}</h3>
+              <p class="text-gray-600">{{faq.answer}}</p>
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

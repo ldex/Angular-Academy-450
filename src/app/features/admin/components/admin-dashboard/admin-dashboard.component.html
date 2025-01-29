@@ -1,0 +1,46 @@
+<div class="container mx-auto p-6">
+  <h1 class="text-3xl font-bold mb-8">Administration Dashboard</h1>
+  
+  <!-- Stats Grid -->
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+    @for (stat of stats; track stat.label) {
+      <div class="bg-white rounded-lg shadow p-6">
+        <div class="flex items-center justify-between mb-4">
+          <div class="text-xl font-semibold text-gray-600">{{stat.label}}</div>
+          <div class="text-2xl font-bold">{{stat.icon}}</div>
+        </div>
+        <div class="text-3xl font-bold mb-2">{{stat.value}}</div>
+        <div [class]="stat.change >= 0 ? 'text-green-600' : 'text-red-600'">
+          {{stat.change >= 0 ? '↑' : '↓'}} {{Math.abs(stat.change)}}%
+        </div>
+      </div>
+    }
+  </div>
+
+  <!-- Recent Activity -->
+  <div class="bg-white rounded-lg shadow p-6">
+    <h2 class="text-xl font-bold mb-4">Recent Activity</h2>
+    <div class="overflow-x-auto">
+      <table class="min-w-full">
+        <thead>
+          <tr class="border-b">
+            <th class="text-left py-3 px-4">ID</th>
+            <th class="text-left py-3 px-4">Action</th>
+            <th class="text-left py-3 px-4">User</th>
+            <th class="text-left py-3 px-4">Timestamp</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (activity of recentActivity; track activity.id) {
+            <tr class="border-b hover:bg-gray-50">
+              <td class="py-3 px-4">#{{activity.id}}</td>
+              <td class="py-3 px-4">{{activity.action}}</td>
+              <td class="py-3 px-4">{{activity.user}}</td>
+              <td class="py-3 px-4">{{activity.timestamp}}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,92 @@
+import { Component, OnInit, inject } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Observable, of } from 'rxjs';
+import { ProductFormComponent } from '../../components/product-form/product-form.component';
+import { ProductService } from '../../../../services/product.service';
+import { Product } from '../../../../models/product.model';
+
+@Component({
+  selector: 'app-product-form-container',
+  imports: [CommonModule, ProductFormComponent],
+  template: `
+    <app-product-form
+      [product]="product$ | async"
+      [isSubmitting]="isSubmitting"
+      (save)="onSave($event)"
+      (cancel)="onCancel()">
+    </app-product-form>
+  `
+})
+export class ProductFormContainerComponent implements OnInit {
+  private route = inject(ActivatedRoute);
+  private router = inject(Router);
+  private productService = inject(ProductService);
+
+  product$: Observable<Product | null>;
+  isSubmitting = false;
+  private productId: number | null = null;
+
+  constructor() {
+    const id = this.route.snapshot.params['id'];
+    this.productId = id ? Number(id) : null;
+    this.product$ = this.productId ? this.productService.getProduct(this.productId) : of(null);
+  }
+
+  ngOnInit(): void {}
+
+  onSave(formData: Partial<Product>): void {
+    if (!this.validateFormData(formData)) {
+      return;
+    }
+
+    this.isSubmitting = true;
+
+    if (this.productId) {
+      this.productService.updateProduct(this.productId, formData).subscribe({
+        next: () => {
+          this.router.navigate(['/products']);
+        },
+        error: (error) => {
+          console.error('Error updating product:', error);
+          this.isSubmitting = false;
+        }
+      });
+    } else {
+      const newProduct = {
+        title: formData.title!,
+        price: formData.price!,
+        description: formData.description!,
+        category: formData.category!,
+        image: formData.image!,
+        rating: { rate: 0, count: 0 }
+      };
+
+      this.productService.createProduct(newProduct).subscribe({
+        next: () => {
+          this.router.navigate(['/products']);
+        },
+        error: (error) => {
+          console.error('Error creating product:', error);
+          this.isSubmitting = false;
+        }
+      });
+    }
+  }
+
+  onCancel(): void {
+    this.router.navigate(['/products']);
+  }
+
+  private validateFormData(formData: Partial<Product>): boolean {
+    const requiredFields = ['title', 'price', 'description', 'category', 'image'];
+    const missingFields = requiredFields.filter(field => !formData[field as keyof typeof formData]);
+
+    if (missingFields.length > 0) {
+      console.error('Missing required fields:', missingFields);
+      return false;
+    }
+
+    return true;
+  }
+}

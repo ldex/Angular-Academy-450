@@ -1,0 +1,45 @@
+<div class="container mx-auto p-4">
+  <h2 class="text-2xl font-bold mb-4">Shopping Cart</h2>
+  @if (items.length > 0) {
+    <div class="space-y-4">
+      @for (item of items; track item.product) {
+        <div class="flex items-center justify-between border-b pb-4">
+          <div class="flex items-center space-x-4">
+            <img [src]="item.productDetails.image" 
+                 [alt]="item.productDetails.title" 
+                 class="w-16 h-16 object-contain">
+            <div>
+              <h3 class="font-semibold">{{item.productDetails.title}}</h3>
+              <p class="text-gray-600">{{item.productDetails.price | currency}}</p>
+            </div>
+          </div>
+          <div class="flex items-center space-x-4">
+            <div class="flex items-center space-x-2">
+              <button (click)="onUpdateQuantity(item.product, item.quantity - 1)"
+                      class="px-2 py-1 bg-gray-200 rounded"
+                      [disabled]="item.quantity <= 1">-</button>
+              <span>{{item.quantity}}</span>
+              <button (click)="onUpdateQuantity(item.product, item.quantity + 1)"
+                      class="px-2 py-1 bg-gray-200 rounded">+</button>
+            </div>
+            <button (click)="onRemoveItem(item.product)"
+                    class="text-red-500 hover:text-red-700">
+              Remove
+            </button>
+          </div>
+        </div>
+      }
+    </div>
+    <div class="mt-4 flex justify-between items-center">
+      <div class="text-xl font-bold">
+        Total: {{calculateTotal(items) | currency}}
+      </div>
+      <button (click)="onClearCart()"
+              class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600">
+        Clear Cart
+      </button>
+    </div>
+  } @else {
+    <p class="text-center text-gray-500">Your cart is empty</p>
+  }
+</div>

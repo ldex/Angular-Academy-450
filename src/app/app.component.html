@@ -1,0 +1,65 @@
+<header class="bg-blue-600 text-white p-4 mb-4">
+  <div class="container mx-auto flex justify-between items-center">
+    <div class="flex items-center space-x-6">
+      <h1 class="text-2xl font-bold">Angular Store</h1>
+      <nav class="hidden md:flex space-x-4">
+        <a routerLink="/"
+           routerLinkActive="text-blue-200"
+           [routerLinkActiveOptions]="{exact: true}"
+           class="text-white hover:text-blue-200">
+          Home
+        </a>
+        <a routerLink="/products"
+           routerLinkActive="text-blue-200"
+           class="text-white hover:text-blue-200">
+          Products
+        </a>
+        <a routerLink="/contact"
+           routerLinkActive="text-blue-200"
+           class="text-white hover:text-blue-200">
+          Contact Us
+        </a>
+        @if (authService.getAuthState() | async; as auth) {
+          @if (auth.isAuthenticated) {
+            <a routerLink="/admin"
+               routerLinkActive="text-blue-200"
+               class="text-white hover:text-blue-200">
+              Administration
+            </a>
+          }
+        }
+      </nav>
+    </div>
+    @if (authService.getAuthState() | async; as auth) {
+      @if (!auth.isAuthenticated) {
+        <button routerLink="/login"
+                class="text-white hover:text-blue-200">
+          Login
+        </button>
+      } @else {
+        <div class="flex items-center gap-4">
+          <button (click)="logout()"
+                  class="text-white hover:text-blue-200">
+            Logout
+          </button>
+        </div>
+      }
+    }
+  </div>
+</header>
+
+<app-loading-indicator></app-loading-indicator>
+
+<main class="min-h-[calc(94vh-theme(spacing.32))]">
+  <router-outlet></router-outlet>
+</main>
+
+<footer class="bg-gray-800 text-white py-6 mt-8">
+  <div class="container mx-auto px-4">
+    <div class="text-center">
+      <p class="text-gray-400">
+        © {{currentYear}} Angular Academy. All rights reserved.
+      </p>
+    </div>
+  </div>
+</footer>
