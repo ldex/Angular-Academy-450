@@ -11,8 +11,11 @@ import { Product } from '../../../../models/product.model';
 export class ProductDetailsComponent {
   @Input() product: Product | null = null;
   @Input() isAuthenticated = false;
+  @Input() error!: string | null;
+  @Input() loading = false;
   @Output() addToCart = new EventEmitter<number>();
   @Output() delete = new EventEmitter<number>();
+
 
   onAddToCart(productId: number): void {
     this.addToCart.emit(productId);

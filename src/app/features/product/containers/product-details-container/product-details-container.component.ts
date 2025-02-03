@@ -1,7 +1,7 @@
 import { Component, Input, numberAttribute, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
-import { Observable } from 'rxjs';
+import { catchError, EMPTY, finalize, Observable } from 'rxjs';
 import { ProductDetailsComponent } from '../../components/product-details/product-details.component';
 import { ProductService } from '../../../../services/product.service';
 import { CartService } from '../../../../services/cart.service';
@@ -14,6 +14,8 @@ import { Product } from '../../../../models/product.model';
   template: `
     <app-product-details
       [product]="product$ | async"
+      [error]="error"
+      [loading]="loading"
       [isAuthenticated]="(authState$ | async)?.isAuthenticated || false"
       (addToCart)="onAddToCart($event)"
       (delete)="onDelete($event)">
@@ -28,11 +30,23 @@ export class ProductDetailsContainerComponent {
 
   product$!: Observable<Product>;
   authState$ = this.authService.getAuthState();
+  error: string | null = null;
+  loading: boolean = false;
 
   @Input({ transform: numberAttribute })
   set id(productId: number)
   {
-    this.product$ = this.productService.getProduct(productId)
+    this.loading = true;
+    this.product$ = this
+      .productService
+      .getProduct(productId)
+      .pipe(
+        catchError(error => {
+          this.error = error.message || "Failed to load product";
+          return EMPTY;
+        }),
+        finalize(() => this.loading = false)
+      )
   }
 
   onAddToCart(productId: number): void {

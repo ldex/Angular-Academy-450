@@ -18,6 +18,8 @@ export class ProductListComponent {
     return this._products;
   }
 
+  @Input() error!: string | null;
+  @Input() loading = false;
   @Input() isAuthenticated = false;
   @Output() addToCart = new EventEmitter<number>();
   @Output() refresh = new EventEmitter<void>();

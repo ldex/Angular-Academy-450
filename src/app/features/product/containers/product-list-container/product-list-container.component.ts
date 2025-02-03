@@ -1,6 +1,6 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Observable } from 'rxjs';
+import { catchError, EMPTY, finalize, Observable } from 'rxjs';
 import { ProductListComponent } from '../../components/product-list/product-list.component';
 import { ProductService } from '../../../../services/product.service';
 import { CartService } from '../../../../services/cart.service';
@@ -13,6 +13,8 @@ import { Product } from '../../../../models/product.model';
   template: `
     <app-product-list
       [products]="products$ | async"
+      [error]="error"
+      [loading]="loading"
       [isAuthenticated]="(authState$ | async)?.isAuthenticated || false"
       (addToCart)="onAddToCart($event)"
       (refresh)="onRefresh()">
@@ -24,11 +26,27 @@ export class ProductListContainerComponent implements OnInit {
   private cartService = inject(CartService);
   private authService = inject(AuthService);
 
-  products$: Observable<Product[]>;
+  products$!: Observable<Product[]>;
   authState$ = this.authService.getAuthState();
+  error: string | null = null;
+  loading: boolean = false;
 
   constructor() {
-    this.products$ = this.productService.getProducts();
+    this.loadProducts();
+  }
+
+  private loadProducts() {
+    this.loading = true;
+    this.products$ = this
+      .productService
+      .getProducts()
+      .pipe(
+        catchError(error => {
+          this.error = error.message || "Failed to load products";
+          return EMPTY;
+        }),
+        finalize(() => this.loading = false)
+      );
   }
 
   ngOnInit(): void {}
@@ -39,6 +57,6 @@ export class ProductListContainerComponent implements OnInit {
 
   onRefresh(): void {
     this.productService.refreshCache();
-    this.products$ = this.productService.getProducts();
+    this.loadProducts();
   }
 }

@@ -2,56 +2,66 @@
   <button routerLink="/products" class="mb-4 text-blue-600 hover:text-blue-800">
     ← Back to Products
   </button>
-  
-  @if (product) {
-    <div class="bg-white rounded-lg shadow-lg p-6">
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-        <div class="flex items-center justify-center">
-          <img [src]="product.image" [alt]="product.title" 
-               class="max-w-full h-auto max-h-[400px] object-contain">
+
+  @if (loading) {
+    <div class="loading"></div>
+  } @else {
+      @if(error) {
+        <div class="col-span-3 text-center py-8 text-red-500">
+          {{error}}
         </div>
-        
-        <div>
-          <h1 class="text-3xl font-bold mb-4">{{product.title}}</h1>
-          <p class="text-2xl font-bold text-blue-600 mb-4">{{product.price | currency}}</p>
-          <div class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full inline-block mb-4">
-            {{product.category}}
-          </div>
-          
-          <div class="mb-6">
-            <div class="flex items-center mb-2">
-              <span class="text-yellow-400 mr-2">★</span>
-              <span>{{product.rating.rate}} ({{product.rating.count}} reviews)</span>
+      }
+
+      @if (product) {
+        <div class="bg-white rounded-lg shadow-lg p-6">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div class="flex items-center justify-center">
+              <img [src]="product.image" [alt]="product.title"
+                  class="max-w-full h-auto max-h-[400px] object-contain">
+            </div>
+
+            <div>
+              <h1 class="text-3xl font-bold mb-4">{{product.title}}</h1>
+              <p class="text-2xl font-bold text-blue-600 mb-4">{{product.price | currency}}</p>
+              <div class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full inline-block mb-4">
+                {{product.category}}
+              </div>
+
+              <div class="mb-6">
+                <div class="flex items-center mb-2">
+                  <span class="text-yellow-400 mr-2">★</span>
+                  <span>{{product.rating.rate}} ({{product.rating.count}} reviews)</span>
+                </div>
+              </div>
+
+              <p class="text-gray-600 mb-6">{{product.description}}</p>
+
+              <div class="flex gap-4">
+                <button (click)="onAddToCart(product.id)"
+                        class="flex-1 bg-blue-600 text-white px-6 py-3 rounded-lg
+                              hover:bg-blue-700 transition-colors">
+                  Add to Cart
+                </button>
+                @if (isAuthenticated) {
+                  <a [routerLink]="['/products/edit', product.id]"
+                    class="bg-gray-500 text-white px-6 py-3 rounded-lg
+                            hover:bg-gray-600 transition-colors">
+                    Edit
+                  </a>
+                  <button (click)="onDelete(product.id)"
+                          class="bg-red-600 text-white px-6 py-3 rounded-lg
+                                hover:bg-red-700 transition-colors">
+                    Delete
+                  </button>
+                }
+              </div>
             </div>
           </div>
-          
-          <p class="text-gray-600 mb-6">{{product.description}}</p>
-          
-          <div class="flex gap-4">
-            <button (click)="onAddToCart(product.id)" 
-                    class="flex-1 bg-blue-600 text-white px-6 py-3 rounded-lg
-                           hover:bg-blue-700 transition-colors">
-              Add to Cart
-            </button>
-            @if (isAuthenticated) {
-              <a [routerLink]="['/products/edit', product.id]" 
-                 class="bg-gray-500 text-white px-6 py-3 rounded-lg
-                        hover:bg-gray-600 transition-colors">
-                Edit
-              </a>
-              <button (click)="onDelete(product.id)"
-                      class="bg-red-600 text-white px-6 py-3 rounded-lg
-                             hover:bg-red-700 transition-colors">
-                Delete
-              </button>
-            }
-          </div>
         </div>
-      </div>
-    </div>
-  } @else {
-    <div class="text-center py-8">
-      <p class="text-gray-500">Loading product...</p>
-    </div>
+      } @else {
+        <div class="text-center text-gray-500 py-8">
+          No product found
+        </div>
+      }
   }
 </div>

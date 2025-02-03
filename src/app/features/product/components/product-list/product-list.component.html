@@ -4,7 +4,7 @@
       <h1 class="text-2xl font-bold">Products</h1>
       <div class="space-x-2">
         @if (isAuthenticated) {
-          <a routerLink="new" 
+          <a routerLink="new"
              class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">
             Add New Product
           </a>
@@ -47,39 +47,48 @@
   </div>
 
   <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-    @for (product of filteredProducts; track product.id) {
-      <div class="border rounded-lg p-4 hover:shadow-lg transition-shadow">
-        <a [routerLink]="[product.id]" class="block">
-          <img [src]="product.image" [alt]="product.title" 
-               class="w-full h-48 object-contain mb-4">
-          <h2 class="text-lg font-semibold">{{product.title}}</h2>
-          <p class="text-gray-600">{{product.price | currency}}</p>
-          <p class="text-sm text-gray-500 mt-2">{{product.category}}</p>
-          <div class="mt-4 flex justify-between items-center">
-            <span class="bg-blue-100 text-blue-800 px-2 py-1 rounded">
-              Rating: {{product.rating.rate}} ({{product.rating.count}})
-            </span>
+    @if (loading) {
+      <div class="loading"></div>
+    } @else {
+        @if(error) {
+          <div class="col-span-3 text-center py-8 text-red-500">
+            {{error}}
           </div>
-        </a>
-        <div class="flex gap-2 mt-4">
-          <button (click)="onAddToCart(product.id)"
-                  class="flex-1 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
-            Add to Cart
-          </button>
-          @if (isAuthenticated) {
-            <a [routerLink]="['edit', product.id]"
-               class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600">
-              Edit
+        }
+        @for (product of filteredProducts; track product.id) {
+          <div class="border rounded-lg p-4 hover:shadow-lg transition-shadow">
+            <a [routerLink]="[product.id]" class="block">
+              <img [src]="product.image" [alt]="product.title"
+                  class="w-full h-48 object-contain mb-4">
+              <h2 class="text-lg font-semibold">{{product.title}}</h2>
+              <p class="text-gray-600">{{product.price | currency}}</p>
+              <p class="text-sm text-gray-500 mt-2">{{product.category}}</p>
+              <div class="mt-4 flex justify-between items-center">
+                <span class="bg-blue-100 text-blue-800 px-2 py-1 rounded">
+                  Rating: {{product.rating.rate}} ({{product.rating.count}})
+                </span>
+              </div>
             </a>
-          }
-        </div>
-      </div>
-    } @empty {
-      <div class="col-span-3 text-center py-8 text-gray-500">
-        No products found
-      </div>
+            <div class="flex gap-2 mt-4">
+              <button (click)="onAddToCart(product.id)"
+                      class="flex-1 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+                Add to Cart
+              </button>
+              @if (isAuthenticated) {
+                <a [routerLink]="['edit', product.id]"
+                  class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600">
+                  Edit
+                </a>
+              }
+            </div>
+          </div>
+        } @empty {
+          <div class="col-span-3 text-center py-8 text-gray-500">
+            No products found
+          </div>
+        }
     }
   </div>
-  
+
   <router-outlet></router-outlet>
 </div>
