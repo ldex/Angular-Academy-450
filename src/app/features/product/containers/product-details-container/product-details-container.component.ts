@@ -40,7 +40,6 @@ export class ProductDetailsContainerComponent {
   }
 
   onDelete(productId: number): void {
-    if (confirm('Are you sure you want to delete this product?')) {
       this.productService.deleteProduct(productId).subscribe({
         next: () => {
           this.router.navigate(['/products']);
@@ -49,6 +48,5 @@ export class ProductDetailsContainerComponent {
           console.error('Error deleting product:', error);
         }
       });
-    }
   }
 }

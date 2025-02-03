@@ -19,6 +19,8 @@ export class ProductDetailsComponent {
   }
 
   onDelete(productId: number): void {
-    this.delete.emit(productId);
+    if (confirm('Are you sure you want to delete this product?')) {
+      this.delete.emit(productId);
+    }
   }
 }
