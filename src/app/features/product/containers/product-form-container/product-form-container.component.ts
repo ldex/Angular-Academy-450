@@ -1,12 +1,13 @@
 import {
   Component,
   Input,
+  OnInit,
   inject,
+  input,
   numberAttribute,
 } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { Router } from "@angular/router";
-import { Observable, of } from "rxjs";
 import { ProductFormComponent } from "../../components/product-form/product-form.component";
 import { ProductService } from "../../../../services/product.service";
 import { Product } from "../../../../models/product.model";
@@ -28,7 +29,7 @@ import { Product } from "../../../../models/product.model";
     }
   `,
 })
-export class ProductFormContainerComponent {
+export class ProductFormContainerComponent implements OnInit {
   private router = inject(Router);
   private productService = inject(ProductService);
 
@@ -38,16 +39,19 @@ export class ProductFormContainerComponent {
   isSubmitting = false;
   private productId: number | null = null;
 
-  @Input({ transform: numberAttribute })
-  set id(productId: number) {
-    this.productId = productId ? Number(productId) : null;
+  id = input<number>();
 
-    this.productService.clearSelectedProduct()
+  ngOnInit() {
+    this.productId = this.id() ?? null;
+    // Clear any previously selected product
+    this.productService.clearSelectedProduct();
 
-    if(this.productId) {
-      this.productService.getProduct(this.productId)
+    // Only fetch product if we're in edit mode
+    if (this.productId) {
+      this.productService.getProduct(this.productId);
     }
   }
+
 
   onSave(formData: Partial<Product>): void {
     if (!this.validateFormData(formData)) {
