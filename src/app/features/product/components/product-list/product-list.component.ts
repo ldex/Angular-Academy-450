@@ -1,4 +1,4 @@
-import { Component, Input, output, input, computed, model } from '@angular/core';
+import { Component, output, input, computed, model, linkedSignal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -13,28 +13,23 @@ export class ProductListComponent {
 
   products = input.required<Product[]>()
 
-  // @Input() set products(value: Product[] | null) {
-  //   this._products = value || [];
-  //   this.applyFilters();
-  // }
-  // get products(): Product[] {
-  //   return this._products;
-  // }
-
   readonly error = input.required<string | null>();
   readonly loading = input(false);
   readonly isAuthenticated = input(false);
   readonly addToCart = output<number>();
   readonly refresh = output<void>();
 
-  // searchQuery = '';
-  // selectedCategory = '';
-  // sortBy = 'name';
-
-  searchQuery = model('')
   selectedCategory = model('')
-  sortBy = model('name')
 
+  searchQuery = linkedSignal({
+    source: this.selectedCategory,
+    computation: () => ''
+  })
+
+  sortBy = linkedSignal({
+    source: this.searchQuery,
+    computation: () => 'name'
+  })
 
   categories = computed(() =>
     [...new Set(this.products().map(p => p.category))]
